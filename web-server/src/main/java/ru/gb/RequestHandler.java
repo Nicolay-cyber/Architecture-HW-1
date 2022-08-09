@@ -6,9 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
 
@@ -23,39 +20,41 @@ public class RequestHandler implements Runnable {
 
     @Override
     public void run() {
-        try (BufferedReader input = new BufferedReader(
-                new InputStreamReader(
-                        socket.getInputStream(), StandardCharsets.UTF_8));
+        try (BufferedReader input = read();
              PrintWriter output = new PrintWriter(socket.getOutputStream())
         ) {
-            while (!input.ready());
 
-            String firstLine = input.readLine();
-            String[] parts = firstLine.split(" ");
-            System.out.println(firstLine);
-            while (input.ready()) {
-                System.out.println(input.readLine());
-            }
+            File file = new File(folder, extractFileName(input));
 
-            Path path = Paths.get(folder, parts[1]);
-            if (!Files.exists(path)) {
-                output.println("HTTP/1.1 404 NOT_FOUND");
-                output.println("Content-Type: text/html; charset=utf-8");
-                output.println();
-                output.println("<h1>Файл не найден!</h1>");
-                output.flush();
+            if (file.isPathEmpty()) {
+                new ResponseSender(output).send(Response.NOT_FOUND.get());
                 return;
             }
 
-            output.println("HTTP/1.1 200 OK");
-            output.println("Content-Type: text/html; charset=utf-8");
-            output.println();
-
-            Files.newBufferedReader(path).transferTo(output);
+            new ResponseSender(output).sendFile(file);
 
             System.out.println("Client disconnected!");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private String extractFileName(BufferedReader input) throws IOException {
+        String firstLine = input.readLine();
+        String[] parts = firstLine.split(" ");
+
+        System.out.println(firstLine);
+        while (input.ready()) {
+            System.out.println(input.readLine());
+        }
+
+        return parts[1];
+    }
+
+    private BufferedReader read() throws IOException {
+        return new BufferedReader(
+                new InputStreamReader(
+                        socket.getInputStream(), StandardCharsets.UTF_8));
+    }
+
 }
