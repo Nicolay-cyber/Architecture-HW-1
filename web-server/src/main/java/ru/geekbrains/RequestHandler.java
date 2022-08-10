@@ -1,10 +1,14 @@
 package ru.geekbrains;
 
+import ru.geekbrains.domain.HttpRequest;
+import ru.geekbrains.domain.HttpResponse;
 import ru.geekbrains.service.FileService;
 import ru.geekbrains.service.SocketService;
 
 import java.io.IOException;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RequestHandler implements Runnable {
 
@@ -20,25 +24,21 @@ public class RequestHandler implements Runnable {
     @Override
     public void run() {
         Deque<String> rawRequest = socketService.readRequest();
-        String firstLine = rawRequest.pollFirst();
-        String[] parts = firstLine.split(" ");
 
-        if (!fileService.exists(parts[1])) {
-            String rawResponse =
-                    "HTTP/1.1 404 NOT_FOUND\n" +
-                    "Content-Type: text/html; charset=utf-8\n" +
-                    "\n" +
-                    "<h1>Файл не найден!</h1>";
-            socketService.writeResponse(rawResponse);
-            return;
+        HttpRequest httpRequest = new RequestParser().parse(rawRequest);
+        HttpResponse httpResponse;
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "text/html; charset=utf-8");
+
+        if (fileService.isDirectory(httpRequest.getPath())) {
+            httpResponse = new HttpResponse(400, headers, "<h1>Это директория!</h1>");
+        } else if (!fileService.exists(httpRequest.getPath())) {
+            httpResponse = new HttpResponse(404, headers, "<h1>Файл не найден!</h1>");
+        } else {
+            httpResponse = new HttpResponse(200, headers, fileService.readFile(httpRequest.getPath()));
         }
 
-        String rawResponse = "HTTP/1.1 200 OK\n" +
-                "Content-Type: text/html; charset=utf-8\n" +
-                "\n" +
-                fileService.readFile(parts[1]);
-        socketService.writeResponse(rawResponse);
-
+        socketService.writeResponse(new ResponseSerializer().serialize(httpResponse));
         try {
             socketService.close();
         } catch (IOException ex) {
