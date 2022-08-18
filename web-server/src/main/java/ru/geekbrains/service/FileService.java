@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class FileService {
+public class FileService implements Service {
 
     private final String rootDir;
 
-    public FileService(String rootDir) {
+    FileService(String rootDir) {
         this.rootDir = rootDir;
     }
 
