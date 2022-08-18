@@ -7,10 +7,11 @@ import java.util.Deque;
 public class RequestParser {
 
     public HttpRequest parse(Deque<String> rawRequest) {
-        HttpRequest httpRequest = new HttpRequest();
         String[] firstLine = rawRequest.pollFirst().split(" ");
-        httpRequest.setMethod(firstLine[0]);
-        httpRequest.setUrl(firstLine[1]);
+        HttpRequest httpRequest = HttpRequest.createBuilder()
+                .withMethod(firstLine[0])
+                .withUrl(firstLine[1])
+                .build();
 
         while (!rawRequest.isEmpty()) {
             String line = rawRequest.pollFirst();
