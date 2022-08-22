@@ -1,13 +1,13 @@
 package ru.geekbrains;
 
-import ru.geekbrains.domain.HttpRequest;
+import ru.geekbrains.domain.requests.HttpBaseRequest;
 
 import java.util.Deque;
 
 public class RequestParser {
 
-    public HttpRequest parse(Deque<String> rawRequest) {
-        HttpRequest.Builder builder = HttpRequest.createBuilder();
+    public HttpBaseRequest parse(Deque<String> rawRequest) {
+        HttpBaseRequest.Builder builder = HttpBaseRequest.createBuilder();
         String[] firstLine = rawRequest.pollFirst().split(" ");
         builder
                 .withMethod(firstLine[0])
