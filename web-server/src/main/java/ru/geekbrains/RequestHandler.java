@@ -32,19 +32,21 @@ public class RequestHandler implements Runnable {
         HttpRequest req = requestParser.parse(rawRequest);
 
         if (!fileService.exists(req.getUrl())) {
-            HttpResponse resp = new HttpResponse();
-            resp.setStatusCode(404);
-            resp.setStatusCodeName("NOT_FOUND");
-            resp.getHeaders().put("Content-Type", "text/html; charset=utf-8");
+            HttpResponse resp = HttpResponse.createBuilder()
+                    .withStatusCode(404)
+                    .withStatusCodeName("NOT_FOUND")
+                    .withHeader("Content-Type", "text/html; charset=utf-8")
+                    .build();
             socketService.writeResponse(responseSerializer.serialize(resp));
             return;
         }
 
-        HttpResponse resp = new HttpResponse();
-        resp.setStatusCode(200);
-        resp.setStatusCodeName("OK");
-        resp.getHeaders().put("Content-Type", "text/html; charset=utf-8");
-        resp.setBody(fileService.readFile(req.getUrl()));
+        HttpResponse resp = HttpResponse.createBuilder()
+                .withStatusCode(200)
+                .withStatusCodeName("OK")
+                .withHeader("Content-Type", "text/html; charset=utf-8")
+                .withBody(fileService.readFile(req.getUrl()))
+                .build();
         socketService.writeResponse(responseSerializer.serialize(resp));
 
         try {

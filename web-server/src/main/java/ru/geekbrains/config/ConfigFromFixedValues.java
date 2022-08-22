@@ -4,7 +4,7 @@ class ConfigFromFixedValues implements ServerConfig {
 
     @Override
     public String getWww() {
-        return "/Users/aleks/dev/geek-architecture-02/www";
+        return "D:/IntelliJ IDEA projects/GB HW/Architecture/HW-1/HW-1/www";
     }
 
     @Override

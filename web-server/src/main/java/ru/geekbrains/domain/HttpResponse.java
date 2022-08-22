@@ -13,38 +13,58 @@ public class HttpResponse {
 
     private String body;
 
-    public HttpResponse() {
+    private HttpResponse() {
     }
 
     public int getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
     public Map<String, String> getHeaders() {
         return headers;
-    }
-
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
     }
 
     public String getBody() {
         return body;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
-
     public String getStatusCodeName() {
         return statusCodeName;
     }
 
-    public void setStatusCodeName(String statusCodeName) {
-        this.statusCodeName = statusCodeName;
+    public static Builder createBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private final HttpResponse response = new HttpResponse();
+
+        public Builder withStatusCode(int statusCode) {
+            this.response.statusCode = statusCode;
+            return this;
+        }
+
+        public Builder withStatusCodeName(String statusCodeName) {
+            this.response.statusCodeName = statusCodeName;
+            return this;
+        }
+
+        public Builder withHeader(String key, String value) {
+            this.response.getHeaders().put(key, value);
+            return this;
+        }
+
+        public Builder withBody(String body) {
+            this.response.body = body;
+            return this;
+        }
+
+        public HttpResponse build() {
+            if (this.response.statusCodeName == null) {
+                throw new IllegalStateException("Status code not defined");
+            }
+            return response;
+        }
     }
 }
