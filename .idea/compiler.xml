@@ -7,6 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="web-server" />
+        <module name="rx-web-server" />
+        <module name="structural-patterns" />
       </profile>
     </annotationProcessing>
   </component>
