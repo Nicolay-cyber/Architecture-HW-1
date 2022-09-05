@@ -6,10 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="web-server" />
         <module name="rx-web-server" />
         <module name="structural-patterns" />
+        <module name="web-server" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="example" target="18" />
+      <module name="Examples" target="18" />
+    </bytecodeTargetLevel>
   </component>
 </project>
