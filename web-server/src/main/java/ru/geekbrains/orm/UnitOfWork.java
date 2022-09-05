@@ -28,6 +28,8 @@ public class UnitOfWork {
     }
 
     public void commit() {
-
+        newUsers.forEach(userMapper::insert);
+        updateUsers.forEach(userMapper::update);
+        deleteUsers.forEach(userMapper::delete);
     }
 }
