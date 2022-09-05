@@ -9,7 +9,7 @@ public class UserRepository {
 
     private final UserMapper mapper;
 
-    private final UnitOfWork unitOfWork;
+    private UnitOfWork unitOfWork;
 
     public UserRepository(Connection conn) {
         this.conn = conn;
@@ -18,30 +18,30 @@ public class UserRepository {
     }
 
     public Optional<User> findById(long id) {
-        return Optional.empty();
+        return mapper.findById(id);
     }
 
     public void beginTransaction() {
-
+        this.unitOfWork = new UnitOfWork(mapper);
     }
 
     public void insert(User user) {
-
+        unitOfWork.registerNew(user);
     }
 
     public void update(User user) {
-
+        unitOfWork.registerUpdate(user);
     }
 
     public void delete(User user) {
-
+        unitOfWork.registerDelete(user);
     }
 
     public void commitTransaction() {
-
+        unitOfWork.commit();
     }
 
     public void rollbackTransaction() {
-
+        this.unitOfWork = new UnitOfWork(mapper);
     }
 }
