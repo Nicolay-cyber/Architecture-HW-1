@@ -13,6 +13,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="example" target="18" />
+      <module name="examples" target="18" />
       <module name="Examples" target="18" />
     </bytecodeTargetLevel>
   </component>
