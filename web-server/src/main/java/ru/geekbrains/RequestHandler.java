@@ -1,6 +1,6 @@
 package ru.geekbrains;
 
-import ru.geekbrains.domain.HttpRequest;
+import ru.geekbrains.domain.requests.*;
 import ru.geekbrains.domain.HttpResponse;
 import ru.geekbrains.handler.MethodHandler;
 import ru.geekbrains.service.FileService;
@@ -28,6 +28,13 @@ public class RequestHandler implements Runnable {
     public void run() {
         Deque<String> rawRequest = socketService.readRequest();
         HttpRequest req = requestParser.parse(rawRequest);
+        switch (req.getMethod()) {
+            case "GET" -> req = new GetRequest(req);
+            case "POST" -> req = new PostRequest(req);
+            case "PUT" -> req = new PutRequest(req);
+        }
+
+        System.out.println(req.getSomethingSpecialBaseOnMethodName());
 
         methodHandler.handle(req);
 

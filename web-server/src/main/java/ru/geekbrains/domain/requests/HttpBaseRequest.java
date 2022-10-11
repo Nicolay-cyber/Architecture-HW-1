@@ -1,9 +1,9 @@
-package ru.geekbrains.domain;
+package ru.geekbrains.domain.requests;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpRequest {
+public class HttpBaseRequest implements HttpRequest{
 
     private String method;
 
@@ -13,7 +13,7 @@ public class HttpRequest {
 
     private String body;
 
-    private HttpRequest() {
+    private HttpBaseRequest() {
     }
 
     public String getMethod() {
@@ -36,9 +36,14 @@ public class HttpRequest {
         return new Builder();
     }
 
+    @Override
+    public String getSomethingSpecialBaseOnMethodName() {
+       return "What is it a method?!";
+    }
+
     public static class Builder {
 
-        private final HttpRequest request = new HttpRequest();
+        private final HttpBaseRequest request = new HttpBaseRequest();
 
         public Builder withMethod(String method) {
             this.request.method = method;
@@ -60,7 +65,7 @@ public class HttpRequest {
             return this;
         }
 
-        public HttpRequest build() {
+        public HttpBaseRequest build() {
             if (this.request.getMethod() == null) {
                 throw new IllegalStateException("Method not defined");
             }
